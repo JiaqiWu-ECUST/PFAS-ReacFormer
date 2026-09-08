@@ -1,0 +1,74 @@
+PFAS,SMILES,System,initial photoinitiator concentration,initial PFAS concentration,pH,temperature,contact time,UV,HA,TOC,Ccl,Cphosphate,"CNO3
+(mM)",CHCO3,CSO4,CCO3,k
+PFOA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,38.7,9.2,25,0.17,200,,,,,,,,,27.3
+PFOA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,20,160,10,20,6,253.7,,,,,,,,,2.46
+PFOA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,9.5,20,48,254,,,,,,,,,0.56
+PFOA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,12,,8,254,,,,,,,,,4.38
+PFBA,O=C(O)C(F)(F)C(F)(F)C(F)(F)F,UV/KI,10,46,7,,2.5,254,,,,,,,,,0.078
+PFHxA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/KI,10,31.9,7,,2.5,254,,,,,,,,,0.066
+TFA,O=C(O)C(F)(F)F,UV/S,10,25,9.5,20,48,254,,,,,,,,,0.15
+PFPrA,O=C(O)C(F)(F)C(F)(F)F,UV/S,10,25,9.5,20,48,254,,,,,,,,,0.66
+PFBA,O=C(O)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,9.5,20,48,254,,,,,,,,,0.4
+PFPeA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,9.5,20,48,254,,,,,,,,,0.7
+PFHxA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,9.5,20,48,254,,,,,,,,,0.57
+PFHpA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,9.5,20,48,254,,,,,,,,,0.52
+PFNA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,9.5,20,48,254,,,,,,,,,0.89
+TFA,O=C(O)C(F)(F)F,UV/S,10,25,12,20,8,254,,,,,,,,,3.44
+PFPrA,O=C(O)C(F)(F)C(F)(F)F,UV/S,10,25,12,20,8,254,,,,,,,,,5.14
+PFBA,O=C(O)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,12,20,8,254,,,,,,,,,7.16
+PFPeA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,12,20,8,254,,,,,,,,,6.63
+PFHxA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,12,20,8,254,,,,,,,,,5.78
+PFHpA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,12,20,8,254,,,,,,,,,5.69
+PFNA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,12,20,8,254,,,,,,,,,5.05
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/KI,10,20,7,20,2.5,254,,,,,,,,,0.18
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,32,9.2,25,0.5,185,,,,,,,,,7.08
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,20,37.2,10,25,4,254,,,,,,,,,0.48
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,20,37.2,10,25,4,185,,,,,,,,,0.87
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,20,37.2,6,25,4,185,,,,,,,,,0.22
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,20,37.2,7,25,4,185,,,,,,,,,0.27
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,20,37.2,8,25,4,185,,,,,,,,,0.34
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,20,37.2,9,25,4,185,,,,,,,,,0.57
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,20,160,9.5,20,8,253.7,,,,,,,,,1.7
+PFOS,FC(F)(C(F)(F)S(=O)(=O)O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,12,20,8,254,,,,,,,,,0.78
+PFBS,C(F)(F)(S(O)(=O)=O)C(F)(F)C(F)(F)C(F)(F)F,UV/KI,10,33.4,7,,2.5,254,,,,,,,,,0.024
+PFHxS,C(C(C(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(C(C(F)(F)F)(F)F)(F)F,UV/KI,10,25.1,7,,2.5,254,,,,,,,,,0.072
+PFBS,O=S(=O)(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,9.5,20,48,254,,,,,,,,,0.0013
+PFBS,O=S(=O)(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,12,20,8,254,,,,,,,,,0.053
+HFPO-DA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(F)F)(F)F)F)O
+",UV/S,20,160,10,,6,253.7,,,,,,,,,2.03
+HFPO-DA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(F)F)(F)F)F)O
+",UV/S,20,160,6.8,,8,253.7,,13.2,,,2.3,,,,1.776
+C7 HFPO TA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(OC(F)(F)F)F)(F)F)F)[O-].[NH4+]
+",UV/S,2,100,12,,8,253.7,,,,,,,,,1.35
+C7 HFPO TA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(OC(F)(F)F)F)(F)F)F)[O-].[NH4+]
+",UV/S,2,100,12,,8,184.9,,,,,,,,,1.98
+C7 HFPO TA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(OC(F)(F)F)F)(F)F)F)[O-].[NH4+]
+
+",UV/S,1,100,12,,8,253.7,,,,,,,,,1.62
+C7 HFPO TA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(OC(F)(F)F)F)(F)F)F)[O-].[NH4+]
+
+",UV/S,3,100,12,,8,253.7,,,,,,,,,2.202
+C7 HFPO TA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(OC(F)(F)F)F)(F)F)F)[O-].[NH4+]
+
+",UV/S,1,100,12,,8,184.9,,,,,,,,,0.282
+C7 HFPO TA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(OC(F)(F)F)F)(F)F)F)[O-].[NH4+]
+",UV/S,3,100,12,,8,184.9,,,,,,,,,3.18
+C7 HFPO TA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(OC(F)(F)F)F)(F)F)F)[O-].[NH4+]
+
+",UV/S,5,100,12,,8,253.7,,,,,,,,,4.08
+C7 HFPO TA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(OC(F)(F)F)F)(F)F)F)[O-].[NH4+]
+
+",UV/S,5,100,12,,8,184.9,,,,,,,,,6.12
+6:2 FTSA,FC(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)CCS(=O)(=O)O,UV/S,20,160,10,,8,253.7,,,,,,,,,0.48
+TFA,O=C(O)C(F)(F)F,UV/S,10,25,12,25,24,254,,,,,,,,,0.41
+PFPrS,C(C(F)(F)F)(C(F)(F)S(=O)(=O)[O-])(F)F,UV/S,10,25,12,25,120,254,,,,,,,,,0.0032
+PFBS,O=S(=O)(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/S,10,25,12,25,120,254,,,,,,,,,0.037
+PFOS,C(C(C(C(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(F)F)(C(C(C(F)(F)F)(F)F)(F)F)(F)F,UV/S,10,25,12,25,24,254,,,,,,,,,0.25
+5:3 FTCA,FC(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)CC(=O)O,UV/S,10,25,12,25,72,254,,,,,,,,,0.014
+6:3 FTCA,FC(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)CC(=O)O,UV/S,10,25,12,25,60,254,,,,,,,,,0.045
+7:3 FTCA,FC(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)CC(=O)O,UV/S,10,25,12,25,48,254,,,,,,,,,0.15
+4:2 FTSA,FC(F)(F)C(F)(F)C(F)(F)C(F)(F)CCS(=O)(=O)O,UV/S,10,25,12,25,48,254,,,,,,,,,0.0053
+8:2 FTSA,FC(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)CCS(=O)(=O)O,UV/S,10,25,12,25,48,254,,,,,,,,,0.068
+C7 HFPO-TA,"C(=O)(C(C(F)(F)F)(OC(C(C(F)(F)F)(OC(F)(F)F)F)(F)F)F)[O-].[NH4+]
+",UV/PS,20,100,12,,8,253.7,,,,,,,,,0.66
+PFOA,O=C(O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F,UV/PS,20,100,12,,8,253.7,,,,,,,,,1.5
