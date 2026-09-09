@@ -4,7 +4,6 @@ Data utilities for k prediction.
 
 import argparse
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import torch
@@ -474,7 +473,7 @@ def reactants_desc_vec(
     ext_feat_param: dict = None,
     readout: str = "mean",
 ) -> torch.Tensor:
-    assert ext_feat_gen is not None,
+    assert ext_feat_gen is not None
     ext_feat_param = ext_feat_param or {"radius": 2, "nBits": 2048, "useChirality": True}
 
     parts = [s for s in str(rct_smiles).split(".") if s]
