@@ -1,11 +1,14 @@
 import math
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch_geometric.nn import global_mean_pool
-
+from torch_geometric.utils import to_dense_batch
 from layers import GCNConv, GINConv, GATConv, FeedForward
-
+import torch.nn as nn
+import torch
+import torch.nn.functional as F
+from mol2graphinfo import NUM_ATOM_TYPE,NUM_DEGRESS_TYPE,\
+                   NUM_FORMCHRG_TYPE,NUM_HYBRIDTYPE,NUM_CHIRAL_TYPE,NUM_AROMATIC_NUM,\
+                   NUM_VALENCE_TYPE,NUM_Hs_TYPE,NUM_RS_TPYE
+from layer import GCNConv,GINConv,GATConv,MultiHeadAttention,FeedForward
+from torch_geometric.nn import global_mean_pool
 
 class DescriptorEncoder(nn.Module):
     def __init__(self, d_in, d_out=128, p=0.1):
@@ -16,34 +19,22 @@ class DescriptorEncoder(nn.Module):
             nn.Dropout(p),
             nn.Linear(d_out, d_out)
         )
-    def forward(self, x):
+    def forward(self, x):         # x: [B, d_in]
         return self.net(x)
 
-class FiLM(nn.Module):
+class FiLM(nn.Module): 
     def __init__(self, d_c, d_h):
         super().__init__()
         self.mlp = nn.Sequential(nn.Linear(2*d_c, d_h), nn.GELU(), nn.Linear(d_h, 2*d_h))
-
+        # 中性初始化：gamma≈1, beta≈0
         nn.init.zeros_(self.mlp[-1].weight)
         nn.init.zeros_(self.mlp[-1].bias)
     def forward(self, h, c_node):
-
-        d = self.mlp(c_node)
+        # h: [N, d_h]; c_node: [N, d_c]
+        d = self.mlp(c_node)            # [N, 2*d_h]
         d_gamma, beta = d.chunk(2, dim=-1)
         gamma = 1.0 + d_gamma
         return gamma * h + beta
-
-
-NUM_ATOM_TYPE = 119
-NUM_DEGRESS_TYPE = 11
-NUM_FORMCHRG_TYPE = 5
-NUM_HYBRIDTYPE = 6
-NUM_CHIRAL_TYPE = 4
-NUM_AROMATIC_NUM = 2
-NUM_VALENCE_TYPE = 7
-NUM_Hs_TYPE = 5
-NUM_RS_TPYE = 3
-
 
 class GraphEncoder(nn.Module):
     def __init__(
@@ -87,11 +78,9 @@ class GraphEncoder(nn.Module):
         self.film_pos = film_pos
         self.use_late_fuse = use_late_fuse and self.use_film
         self.d_c = d_c or emb_dim
+        self.system_proj = nn.Linear(128, 64)
 
-
-        self.system_emb = nn.Embedding(num_system, system_emb_dim) if num_system > 0 else None
-
-
+        
         emb_setting = (emb_dim,)
         self.x_embedding1 = nn.Embedding(NUM_ATOM_TYPE, *emb_setting)
         self.x_embedding2 = nn.Embedding(NUM_DEGRESS_TYPE, *emb_setting)
@@ -112,11 +101,11 @@ class GraphEncoder(nn.Module):
             self.x_embedding7, self.x_embedding8, self.x_embedding9
         ]
 
-
+     
         if self.use_cont:
             self.proj = nn.Linear(emb_dim + cont_dim, emb_dim)
 
-
+      
         self.gnns = nn.ModuleList()
         for _ in range(gnum_layer):
             if gnn_type.lower() == 'gcn':
@@ -129,11 +118,11 @@ class GraphEncoder(nn.Module):
                 raise ValueError(f"Unknown GNN type: {gnn_type}")
         self.batch_norms = nn.ModuleList(nn.BatchNorm1d(emb_dim) for _ in range(gnum_layer))
 
-
-        self.use_film = use_film and (d_descr_in > 0)
-        self.descr_enc = None
+ 
+        self.use_film = use_film and (d_descr_in > 0)   
+        self.descr_enc = None         
         self.films = nn.ModuleList(FiLM(d_c=self.d_c, d_h=emb_dim) for _ in range(gnum_layer))
-        self.film_mlp = None
+        self.film_mlp = None       
 
 
         if self.use_edge_head:
@@ -157,17 +146,16 @@ class GraphEncoder(nn.Module):
         device = x.device
         B = batch.max().item() + 1 if batch.numel() else 1
 
-
-        x_emb = torch.stack([emb(x[:, i]) for i, emb in enumerate(self.x_embedding_list)])
-        x_emb = x_emb.mean(0) if self.node_readout == 'mean' else x_emb.sum(0)
+       
+        x_emb = torch.stack([emb(x[:, i]) for i, emb in enumerate(self.x_embedding_list)]).mean(0)
         if self.use_cont and x_cont is not None:
             h = self.proj(torch.cat([x_emb, x_cont], dim=-1))
         else:
             h = x_emb
 
-
+       
         film_parts = []
-
+       
         if descr_vec is not None:
             if descr_vec.dim() == 1:
                 descr_vec = descr_vec.unsqueeze(0).expand(B, -1)
@@ -175,24 +163,29 @@ class GraphEncoder(nn.Module):
                 d_in = descr_vec.shape[1]
                 self.descr_enc = DescriptorEncoder(d_in=d_in, d_out=self.d_c, p=self.drop_ratio).to(device)
             film_parts.append(self.descr_enc(descr_vec))
-
+ 
         if cond_vec is not None:
             if cond_vec.dim() == 1:
                 cond_vec = cond_vec.unsqueeze(0).expand(B, -1)
             film_parts.append(cond_vec)
-
-        if system_id is not None and self.system_emb is not None:
+   
+        if system_id is not None and self.system_proj is not None:
             if system_id.dim() == 0:
                 system_id = system_id.unsqueeze(0)
             if system_id.dim() == 1 and system_id.size(0) == 1:
                 system_id = system_id.expand(B)
-            film_parts.append(self.system_emb(system_id))
+            # film_parts.append(self.system_emb(system_id))
+            system_id = system_id.clamp(min=0) 
+            max_id = 127 
 
+            system_onehot = F.one_hot(system_id.long(), num_classes=max_id + 1).float()  # [B, 128]
+            system_vec = self.system_proj(system_onehot)  # [B, 64]
+            film_parts.append(system_vec)
 
+     
         film_vec = torch.cat(film_parts, dim=1) if film_parts else None
         gamma = beta = None
         if film_vec is not None:
-
             if self.film_mlp is None:
                 film_in_dim = film_vec.shape[1]
                 self.film_mlp = nn.Sequential(
@@ -206,17 +199,14 @@ class GraphEncoder(nn.Module):
         h_list = [h]
         for layer in range(self.gnum_layer):
             h_in = h_list[-1]
-
             if self.use_film and self.film_pos in ('pre', 'both'):
                 g = gamma[batch] if gamma is not None else None
                 b = beta[batch] if beta is not None else None
                 c_node = torch.cat([g, b], dim=1) if g is not None else None
                 h_in = self.films[layer](h_in, c_node)
-
             h_out = self.gnns[layer](h_in, edge_index, edge_attr)
             h_out = F.relu(h_out)
             h_out = F.dropout(h_out, p=self.drop_ratio, training=self.training)
-
             if self.use_film and self.film_pos in ('post', 'both'):
                 g = gamma[batch] if gamma is not None else None
                 b = beta[batch] if beta is not None else None
@@ -252,6 +242,106 @@ class GraphEncoder(nn.Module):
             graph_rep_fused = self.late_proj(torch.cat([graph_rep, gamma], dim=1))
 
         return node_rep, edge_rep, graph_rep, graph_rep_fused, mol_index, batch
+
+class Graph2VecEncoder(nn.Module):
+    def __init__(self, graph_enc, trans_enc=None, pool="mean"):
+        super().__init__()
+        self.graph_enc = graph_enc
+        self.trans_enc = trans_enc
+        self.pool = pool
+
+    def forward(self, batch, descr_vec=None, cond_vec=None, system_id=None, return_attn=False):
+        node_rep, _, _, graph_rep_fused, _, node_batch = self.graph_enc(
+            x=batch.x,
+            mol_index=batch.batch,
+            edge_index=batch.edge_index,
+            edge_attr=batch.edge_attr,
+            batch=batch.batch,
+            x_cont=None,
+            descr_vec=descr_vec,
+            cond_vec=cond_vec,
+            system_id=system_id,
+        )
+
+        if self.trans_enc is not None:
+            memory, valid_mask = to_dense_batch(node_rep, node_batch)
+            if return_attn:
+                memory, self_attn = self.trans_enc(memory, mask=valid_mask, return_attn=True)
+            else:
+                memory = self.trans_enc(memory, mask=valid_mask, return_attn=False)
+                self_attn = None
+
+            m = valid_mask.unsqueeze(-1).float()
+            graph_vec = (memory * m).sum(1) / (m.sum(1).clamp_min(1.0))
+        else:
+            graph_vec = graph_rep_fused
+            self_attn = None
+
+        if return_attn:
+            return graph_vec, self_attn, valid_mask
+        return graph_vec
+
+class PFASGraphRegressor(nn.Module):
+    def __init__(self, encoder, d_descr_in, d_model, use_mol_desc=True,
+                 head_hidden=256, head_dropout=0.1):
+        super().__init__()
+        self.encoder = encoder
+        self.use_mol_desc = use_mol_desc
+
+        self.cond_proj = None
+        if use_mol_desc:
+            self.cond_proj = nn.Sequential(
+                nn.LayerNorm(d_descr_in),
+                nn.Linear(d_descr_in, d_model),
+                nn.GELU(),
+                nn.Linear(d_model, d_model),
+            )
+
+        self.head = RegressorHead(d_model, hidden=head_hidden, dropout=head_dropout)
+
+    def forward(self, batch, descr_vec=None, cond_vec=None, system_id=None):
+        if descr_vec is not None and descr_vec.dim() == 3 and descr_vec.size(1) == 1:
+            descr_vec = descr_vec.squeeze(1)
+
+        graph_vec = self.encoder(batch, descr_vec=descr_vec, cond_vec=cond_vec, system_id=system_id)
+
+    
+        if graph_vec is None:
+            graph_vec = torch.zeros(
+                batch.num_graphs if hasattr(batch, "num_graphs") else batch.x.size(0),
+                self.head.net[0].normalized_shape[0],
+                device=batch.x.device,
+            )
+
+        if self.use_mol_desc and (self.cond_proj is not None):
+            if descr_vec is None:
+                descr_vec = torch.zeros(
+                    graph_vec.size(0),
+                    self.cond_proj[0].normalized_shape[0],
+                    device=graph_vec.device,
+                    dtype=graph_vec.dtype
+                )
+            graph_vec = graph_vec + self.cond_proj(descr_vec)
+
+        pred = self.head(graph_vec)
+        return pred
+
+class RegressorHead(nn.Module):
+    def __init__(self, d_in, hidden=256, dropout=0.1):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.LayerNorm(d_in),
+            nn.Linear(d_in, hidden),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden, hidden // 2),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden // 2, 1),
+        )
+
+    def forward(self, x):
+        return self.net(x)
 
 class MultiHeadAttention(nn.Module):
     def __init__(self, hidden_size, num_heads, attn_drop=0.0, proj_drop=0.0):
@@ -348,19 +438,3 @@ class TransformerEncoder(nn.Module):
             attn_list.append(attn)
         return x, attn_list
 
-
-class CenterHead(nn.Module):
-    def __init__(self, hid=256):
-        super().__init__()
-        self.atom_head = nn.Linear(hid, 1)
-        self.bond_mlp  = nn.Sequential(
-            nn.Linear(2 * hid, hid), nn.GELU(), nn.Linear(hid, 1)
-        )
-
-    def forward(self, h, edge_index):
-        pass
-        atom_logits = self.atom_head(h).squeeze(-1)
-        hi, hj = h[edge_index[0]], h[edge_index[1]]
-        bond_logits = self.bond_mlp(torch.cat([hi, hj], dim=-1)).squeeze(-1)
-        pass
-        return atom_logits, bond_logits
