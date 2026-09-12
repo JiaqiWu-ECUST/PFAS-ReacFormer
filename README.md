@@ -99,7 +99,7 @@ The repository is organized around three datasets.
 
 ### Reaction-center data
 
-`Data/reaction_center/` contains the source table and predefined split information used for reaction-center-guided pretraining:
+`Data/reaction_center/` contains predefined split information used for reaction-center-guided pretraining:
 
 ```text
 pretrain_data_split.json
