@@ -4,7 +4,6 @@ import torch.nn.functional as F
 from torch_geometric.nn import global_mean_pool
 from layers import GCNConv, GINConv, GATConv, MultiHeadAttention, FeedForward
 
-
 NUM_ATOM_TYPE   = 65
 NUM_DEGRESS_TYPE= 11
 NUM_FORMCHRG_TYPE=5
