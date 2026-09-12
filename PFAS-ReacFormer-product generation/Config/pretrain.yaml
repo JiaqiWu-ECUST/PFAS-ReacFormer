@@ -1,0 +1,78 @@
+data:
+  data_path: /data/pretrain/center_local.pt
+  batch_size: 256
+  seed: 42
+  split_file: /data/pretrain/data_split.json
+  num_workers: 8
+  random_smiles: true
+
+model:
+  save_dir: /results/pretrain
+  stage1_dir: null
+  UNFREEZE_ENCODER: false
+
+  emb_dim: 128
+  gnn_num_layer: 5
+  gnn_type: "gcn"
+  gnn_aggr: "add"
+  gnn_jk: "last"
+  drop_ratio: 0.1
+  num_heads: 8
+  node_readout: "sum"
+  use_cont: false
+  use_edge_head: true
+  edge_attr_dim: 6
+
+
+  use_film: true
+  d_descr_in: 117        
+  use_mol_desc: true     
+  cond_dim: 4          
+  num_system: 2        
+
+  use_transformer: true
+  trans_num_layer: 3
+  trans_intermediate_size: 512
+
+
+  decoder_num_layers: 10
+  decoder_num_heads: 8
+  decoder_dropout: 0.07
+  max_seq_len: 256
+
+  
+  pretrained_path: /root/autodl-tmp/20260121_164430/model/best.pt 
+
+ 
+  resume_path: null 
+
+optimizer:
+  learning_rate: 3e-4 
+  encoder_lr: 1.0e-5   
+  weight_decay: 4.0e-5
+
+scheduler:
+  warmup_step: 300
+
+
+training:
+  epoch: 600
+  accum: 1
+  clip_norm: 1.0
+  log_iter_step: 50
+  chem_lambda: 0.00
+
+
+
+
+eval:
+  beam_size: 5
+  max_len: 65
+  length_penalty_alpha: 0.6
+  max_candidates: 10
+  temperature: 0.7
+  num_batches: 0
+  debug_print: false
+  debug_n: 5
+  min_len: 8
+  rep_penalty: 0.2
