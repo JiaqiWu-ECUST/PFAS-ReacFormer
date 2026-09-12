@@ -1,0 +1,46 @@
+data:
+  data_path: "/data/k_prediction/k_dataset.pt"
+  seed: 77
+  num_workers: 4
+  batch_size: 16
+
+model:
+  save_dir: "/results/k_prediction"
+  d_descr_in: 117
+  emb_dim: 128
+  gnn_num_layer: 3
+  gnn_type: "GCN"
+  gnn_aggr: "add"
+  gnn_jk: "last"
+  drop_ratio: 0.1
+  node_readout: "sum"
+  use_cont: false
+  use_edge_head: true
+  edge_attr_dim: 6
+  use_film: true
+  use_transformer: false
+  trans_num_layer: 3
+  trans_intermediate_size: 512
+  num_heads: 8
+  use_mol_desc: true
+  UNFREEZE_ENCODER: true
+  pretrained_model_path: ""
+
+optimizer:
+  learning_rate: 2e-4
+  weight_decay: 1e-4
+  encoder_lr: 1e-5
+
+training:
+  epoch: 350
+  accum: 2
+  clip_norm: 5.0
+
+scheduler:
+  warmup_step: 100
+
+cv:
+  n_splits: 5
+  valid_ratio_within_train: 0.125
+  split_path: "/data/k_prediction/splits.pt"
+  run_fold: 4
