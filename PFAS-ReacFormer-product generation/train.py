@@ -255,19 +255,60 @@ class PFASSeqTrainer:
     def _build_data(self):
         ds = PFASSeqDataset(self.cfg.data.data_path)
         n = len(ds)
-        idx = np.random.default_rng(self.cfg.data.seed).permutation(n)
-        tr = int(n * self.cfg.data.train_ratio)
-        va = tr + int(n * self.cfg.data.valid_ratio)
-        self.train_set = torch.utils.data.Subset(ds, idx[:tr])
-        self.valid_set = torch.utils.data.Subset(ds, idx[tr:va])
-        self.test_set  = torch.utils.data.Subset(ds, idx[va:va + int(n * self.cfg.data.test_ratio)])
 
 
-        split_info = {
-            'train': idx[:tr].tolist(),
-            'valid': idx[tr:va].tolist(),
-            'test': idx[va:va + int(n * self.cfg.data.test_ratio)].tolist()
-        }
+        split_file = self.cfg.data.get("split_file", None)
+
+        if split_file:
+            if not os.path.exists(split_file):
+                raise FileNotFoundError(
+                    f"split_file not found: {split_file}"
+                )
+
+            logging.info(f"Loading fixed dataset split from: {split_file}")
+
+            with open(split_file, "r", encoding="utf-8") as f:
+                split_info = json.load(f)
+
+            train_idx = np.asarray(split_info["train"], dtype=np.int64)
+            valid_idx = np.asarray(split_info["valid"], dtype=np.int64)
+            test_idx = np.asarray(split_info["test"], dtype=np.int64)
+
+            logging.info(
+                f"Loaded fixed split: "
+                f"train={len(train_idx)}, "
+                f"valid={len(valid_idx)}, "
+                f"test={len(test_idx)}"
+            )
+
+
+        else:
+            logging.info(
+                "No split_file provided. Using random dataset split."
+            )
+
+            idx = np.random.default_rng(
+                self.cfg.data.seed
+            ).permutation(n)
+
+            tr = int(n * self.cfg.data.train_ratio)
+            va = tr + int(n * self.cfg.data.valid_ratio)
+
+            train_idx = idx[:tr]
+            valid_idx = idx[tr:va]
+            test_idx = idx[
+                va:va + int(n * self.cfg.data.test_ratio)
+            ]
+
+            split_info = {
+                "train": train_idx.tolist(),
+                "valid": valid_idx.tolist(),
+                "test": test_idx.tolist()
+            }
+
+        self.train_set = torch.utils.data.Subset(ds, train_idx)
+        self.valid_set = torch.utils.data.Subset(ds, valid_idx)
+        self.test_set = torch.utils.data.Subset(ds, test_idx)
 
 
         split_info_file = os.path.join(self.save_dir, "split_info.json")
@@ -1181,8 +1222,58 @@ class PFASSeqTrainer:
             self.writer.add_scalar("summary/valid_top1_infer", inf_top1, epoch)
             self.writer.add_scalar("summary/valid_top5_infer", inf_top5, epoch)
 
+        # ===== Final Test: load best_top5.pt =====
+        best_top5_path = os.path.join(
+            self.save_dir,
+            "model",
+            "best_top5.pt"
+        )
 
-        self.test_model()
+        if os.path.exists(best_top5_path):
+            logging.info(
+                f"[Final Test] Loading best_top5 checkpoint: {best_top5_path}"
+            )
+
+            ckpt = torch.load(
+                best_top5_path,
+                map_location=self.device
+            )
+
+            self.model.load_state_dict(
+                ckpt["model"],
+                strict=True
+            )
+
+            best_epoch = ckpt.get("epoch", "unknown")
+
+            logging.info(
+                f"[Final Test] Loaded best_top5.pt from epoch {best_epoch}"
+            )
+
+        else:
+            logging.warning(
+                "[Final Test] best_top5.pt not found. "
+                "Using current model for test."
+            )
+
+        test_top1, test_top5 = self.test_model()
+
+        logging.info(
+            f"[FINAL TEST] Top-1={test_top1:.4f}, "
+            f"Top-5={test_top5:.4f}"
+        )
+
+        self.writer.add_scalar(
+            "summary/test_top1",
+            test_top1,
+            self.cfg.training.epoch
+        )
+
+        self.writer.add_scalar(
+            "summary/test_top5",
+            test_top5,
+            self.cfg.training.epoch
+        )
 
         self.writer.close()
         logging.info("Training finished.")
