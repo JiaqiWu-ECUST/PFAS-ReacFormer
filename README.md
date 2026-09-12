@@ -108,7 +108,7 @@ pretrain_data_split.json
 The reaction-center dataset used for DRGM pretraining is available through Zenodo:
 
 **Reaction-Center Pretraining Dataset for PFAS-ReacFormer**  
-DOI: `10.5281/zenodo.XXXXXXXX`
+DOI: `10.5281/zenodo.22724632`
 
 The processed PyTorch data object used by `DRGM/train.py` should be specified through `data.data_path` in `DRGM/Config/pretrain.yaml`.
 
@@ -140,7 +140,7 @@ The JSON file contains the predefined train/validation/test split used for trans
 
 Large processed data files may be archived separately on Zenodo because of GitHub file-size limitations.
 
-**Zenodo DOI:** `TO BE ADDED`
+**Zenodo DOI:** `10.5281/zenodo.22724632`
 
 After downloading the archived data, place the files in the corresponding `Data/` subdirectory and update the paths in the YAML configuration files accordingly.
 
