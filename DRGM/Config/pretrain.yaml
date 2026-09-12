@@ -1,0 +1,72 @@
+data:
+  batch_size: 2
+  data_path: /data/pretrain/center_local.pt
+  seed: 42
+  split_file: /data/pretrain/data_split.json
+  test_ratio: 0.15
+  train_ratio: 0.7
+  valid_ratio: 0.15
+
+model:
+  d_c: 128
+  d_descr_in: 117
+  drop_ratio: 0.1
+  edge_attr_dim: 6
+  emb_dim: 128
+  film_pos: pre
+  fine_tune: false
+  gnn_aggr: add
+  gnn_jk: last
+  gnn_num_layer: 3
+  gnn_type: gcn
+  hidden_dropout_prob: 0.1
+  node_readout: sum
+  num_heads: 8
+  pretrained_model: ''
+  save_dir: /results/pretrain
+  trainable: all
+  trans_intermediate_size: 512
+  trans_num_layer: 3
+  use_cont: false
+  use_edge_head: true
+  use_film: true
+  use_late_fuse: true
+  use_transformer: true
+
+optimizer:
+  learning_rate: 0.0003
+  optimizer: adamw
+  weight_decay: 1.0e-05
+
+others:
+  device: cuda
+  local_rank: 0
+  multi_gpu: false
+
+scheduler:
+  lr_decay_factor: 0.5
+  lr_decay_step_size: 20
+  type: linear_warmup
+  warmup_step: 600
+
+training:
+  use_focal_loss: true
+  focal_gamma_pos: 1.0
+  focal_gamma_neg: 2.0
+  atom_alpha: null
+  bond_alpha: 0.35
+  lambda_bond: 5
+  atom_pos_weight: 1.0
+  bond_pos_weight: 1.0
+  accum: 16
+  clip_norm: 1.0
+  epoch: 50
+  log_iter_step: 50
+  beta_atom: 0.5
+  beta_bond: 0.9
+  pos_rate_lo: 0.3
+  pos_rate_hi: 1.0
+  soft_atom_weight: 0.2
+
+use_amp: true
+checkpoint_gradients: true
