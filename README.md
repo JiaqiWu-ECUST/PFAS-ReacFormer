@@ -102,9 +102,13 @@ The repository is organized around three datasets.
 `Data/reaction_center/` contains the source table and predefined split information used for reaction-center-guided pretraining:
 
 ```text
-Zenodo DOI:
 pretrain_data_split.json
 ```
+
+The reaction-center dataset used for DRGM pretraining is available through Zenodo:
+
+**Reaction-Center Pretraining Dataset for PFAS-ReacFormer**  
+DOI: `10.5281/zenodo.XXXXXXXX`
 
 The processed PyTorch data object used by `DRGM/train.py` should be specified through `data.data_path` in `DRGM/Config/pretrain.yaml`.
 
