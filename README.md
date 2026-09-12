@@ -102,7 +102,7 @@ The repository is organized around three datasets.
 `Data/reaction_center/` contains the source table and predefined split information used for reaction-center-guided pretraining:
 
 ```text
-data.csv
+Zenodo DOI:
 pretrain_data_split.json
 ```
 
@@ -210,24 +210,6 @@ PFAS-ReacFormer-k prediction/Config/k.yaml
 
 Because the directory name contains a space, quote the paths when running from the repository root.
 
-### Random-split cross-validation
-
-```bash
-python "PFAS-ReacFormer-k prediction/train_random_split.py" \
-  --config "PFAS-ReacFormer-k prediction/Config/k.yaml"
-```
-
-This script implements leakage-free fixed K-fold cross-validation for PFAS log10(k) regression.
-
-### Compound-level cross-validation
-
-```bash
-python "PFAS-ReacFormer-k prediction/train_compound_split.py" \
-  --config "PFAS-ReacFormer-k prediction/Config/k.yaml"
-```
-
-This workflow evaluates generalization using compound-level fixed K-fold cross-validation.
-
 ### Single/fixed-fold run
 
 ```bash
@@ -265,6 +247,16 @@ Before running, update:
 
 to match the local data and DRGM checkpoint locations.
 
+Two-stage training strategy
+
+Product generation is trained in two stages.
+
+Stage 1 — frozen-encoder training.
+The molecular encoder is initialized with the DRGM-pretrained weights and kept frozen.
+
+Stage 2 — encoder fine-tuning.
+The best Stage 1 checkpoint (best_top5.pt) is used to initialize Stage 2.
+
 The model uses beam-search decoding during evaluation. The corresponding parameters, including beam size, maximum sequence length, length penalty, temperature, and candidate limits, are defined under `eval` in the YAML configuration.
 
 During training, validation performance is used for checkpoint selection. The training workflow saves a `best_top5.pt` checkpoint and, when available, loads this checkpoint for final testing.
@@ -274,9 +266,7 @@ During training, validation performance is used for checkpoint selection. The tr
 The intended transfer-learning workflow is:
 
 ```text
-General reaction data
-        │
-        ▼
+
 DRGM reaction-center-guided pretraining
         │
         ▼
@@ -289,44 +279,3 @@ Pretrained molecular encoder
 
 The kinetic and product-generation modules therefore use the DRGM checkpoint as an upstream initialization rather than transferring a downstream task head between the two PFAS tasks.
 
-## Reproducibility
-
-For reproducible evaluation:
-
-- retain the provided train/validation/test or cross-validation split files;
-- use the YAML configuration corresponding to the experiment;
-- use the same upstream pretrained checkpoint when reproducing transfer-learning experiments;
-- select downstream checkpoints using validation performance;
-- evaluate the selected checkpoint on the predefined test data without post hoc removal of test samples.
-
-Random seeds are specified in the configuration files.
-
-## Citation
-
-If you use PFAS-ReacFormer, the associated data, or this code in your research, please cite:
-
-```text
-Wu, J., Wang, J., Han, J., Wu, Y., Zhou, L., & Sui, Q.
-Multimodal deep learning decodes PFAS transformation in water under data scarcity.
-```
-
-The full journal citation and DOI will be added after publication.
-
-## Authors
-
-Jiaqi Wu, Jiaxi Wang, Jiarui Han, Yanlin Wu, Lei Zhou*, and Qian Sui*
-
-Key Laboratory of Environmental Risk Assessment and Control on Chemical Process, Ministry of Ecology and Environment, School of Resources and Environmental Engineering, East China University of Science and Technology, Shanghai 200237, P. R. China.
-
-Additional affiliations are provided in the associated manuscript.
-
-## Contact
-
-For questions regarding the study or code, please contact:
-
-**Lei Zhou** — zhoulei@ecust.edu.cn  
-**Qian Sui** — suiqian@ecust.edu.cn
-
-## License
-
-This repository is released under the **MIT License**. See `LICENSE` for details.
